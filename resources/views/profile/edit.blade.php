@@ -1,29 +1,58 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
+@php
+    $layout = match(auth()->user()->role) {
+        'admin' => 'layouts.base_admin',
+        'technician' => 'layouts.base_technician',
+        default => 'layouts.base_user'
+    };
+@endphp
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
-                </div>
-            </div>
+@extends($layout)
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
-            </div>
+@section('title', 'Gestion du Profil')
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
-                </div>
+@section('content')
+<div class="bg-white rounded-xl shadow-sm overflow-hidden max-w-2xl mx-auto mt-8">
+    <!-- En-tête -->
+    <div class="px-6 py-4 border-b flex items-center bg-gray-50">
+        <i class="bi bi-person-gear text-userPrimary mr-2"></i>
+        <h3 class="text-lg font-semibold">Modifier votre profil</h3>
+    </div>
+
+    <!-- Contenu -->
+    <div class="p-6 space-y-8">
+        <!-- Messages de statut -->
+        @if(session('status') || session('success'))
+        <div class="p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded-lg">
+            {{ session('status') ?? session('success') }}
+        </div>
+        @endif
+
+        <!-- Information du profil -->
+        <div class="space-y-6">
+            <div class="flex items-center gap-3 text-userPrimary">
+                <i class="bi bi-person-circle text-xl"></i>
+                <h4 class="text-lg font-medium">Informations personnelles</h4>
             </div>
+            @include('profile.update-profile-information-form')
+        </div>
+
+        <!-- Mot de passe -->
+        <div class="space-y-6 pt-6 border-t">
+            <div class="flex items-center gap-3 text-userPrimary">
+                <i class="bi bi-shield-lock text-xl"></i>
+                <h4 class="text-lg font-medium">Sécurité du compte</h4>
+            </div>
+            @include('profile.update-password-form')
+        </div>
+
+        <!-- Suppression du compte -->
+        <div class="space-y-6 pt-6 border-t">
+            <div class="flex items-center gap-3 text-red-500">
+                <i class="bi bi-trash3 text-xl"></i>
+                <h4 class="text-lg font-medium">Zone dangereuse</h4>
+            </div>
+            @include('profile.delete-user-form')
         </div>
     </div>
-</x-app-layout>
+</div>
+@endsection

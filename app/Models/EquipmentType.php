@@ -4,25 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class EquipementType extends Model
+class EquipmentType extends Model // Nom corrigé
 {
     use HasFactory;
 
-    // Définir les champs que l'on peut remplir
     protected $fillable = [
-        'name'
+        'name',
+        'description' // Ajout recommandé
     ];
 
-    // Définir la relation avec la table 'equipments'
-    public function equipments()
+    public function equipments(): HasMany
     {
-        return $this->hasMany(Equipement::class);
+        return $this->hasMany(Equipment::class); // Nom corrigé
     }
 
-    // Définir la relation avec la table 'characteristics'
-    public function characteristics()
+    public function characteristics(): HasMany
     {
-        return $this->hasMany(Characteristic::class);
+        return $this->hasMany(Characteristic::class)
+            ->with('validationRules'); // Relation améliorée
     }
 }

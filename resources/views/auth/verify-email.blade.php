@@ -1,72 +1,65 @@
-<!-- filepath: c:\xampp\htdocs\instad_maintenance\resources\views\auth\verify-email.blade.php -->
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <title>Verify Email</title>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vérification Email - INSTAD</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-        <!-- Tailwind CSS -->
-        <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .verify-bg {
+            background: linear-gradient(15deg, #1E3A8A 0%, #3B82F6 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="verify-bg min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-md px-4">
+        <div class="bg-white rounded-xl card-shadow p-8">
+            <!-- Logo -->
+            <div class="flex justify-center mb-8">
+                <img src="{{ asset('assets/img/instad-logo.jpg') }}" alt="INSTAD Logo" class="h-16">
+            </div>
 
-        <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-        <!-- Font Awesome -->
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-
-        <!-- Custom Styles -->
-        <style>
-            body {
-                background: linear-gradient(to right, #4e54c8, #8f94fb);
-                font-family: 'Figtree', sans-serif;
-            }
-            .card {
-                border-radius: 15px;
-            }
-            .btn-primary {
-                background-color: #6c63ff;
-                border-color: #6c63ff;
-            }
-            .btn-primary:hover {
-                background-color: #574bff;
-                border-color: #574bff;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container d-flex justify-content-center align-items-center min-vh-100">
-            <div class="col-lg-5">
-                <div class="card shadow-lg border-0">
-                    <div class="card-header bg-white text-center">
-                        <h3 class="text-primary font-weight-bold">Verify Email</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-4 text-sm text-gray-600 text-center">
-                            {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
-                        </div>
-
-                        @if (session('status') == 'verification-link-sent')
-                            <div class="alert alert-success text-center">
-                                {{ __('A new verification link has been sent to the email address you provided during registration.') }}
-                            </div>
-                        @endif
-
-                        <form method="POST" action="{{ route('verification.send') }}" class="text-center">
-                            @csrf
-                            <button type="submit" class="btn btn-primary">Resend Verification Email</button>
-                        </form>
-
-                        <form method="POST" action="{{ route('logout') }}" class="text-center mt-3">
-                            @csrf
-                            <button type="submit" class="btn btn-link text-danger">Log Out</button>
-                        </form>
-                    </div>
+            <!-- Contenu -->
+            <div class="space-y-6">
+                <div class="text-center">
+                    <h3 class="text-2xl font-bold text-indigo-600 mb-2">
+                        <i class="bi bi-envelope-check mr-2"></i>Vérification de l'email
+                    </h3>
+                    <p class="text-gray-600">
+                        {{ __('Merci pour votre inscription ! Avant de commencer, veuillez vérifier votre adresse email en cliquant sur le lien que nous vous avons envoyé.') }}
+                    </p>
                 </div>
+
+                @if (session('status') == 'verification-link-sent')
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
+                        {{ __('Un nouveau lien de vérification a été envoyé à votre adresse email.') }}
+                    </div>
+                @endif
+
+                <form method="POST" action="{{ route('verification.send') }}" class="text-center">
+                    @csrf
+                    <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-colors font-medium">
+                        Renvoyer le lien de vérification
+                    </button>
+                </form>
+
+                <form method="POST" action="{{ route('logout') }}" class="text-center">
+                    @csrf
+                    <button type="submit" class="text-indigo-600 hover:text-indigo-800 font-medium">
+                        Se déconnecter
+                    </button>
+                </form>
             </div>
         </div>
-
-        <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
+    </div>
+</body>
 </html>

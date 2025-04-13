@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Equipement extends Model
+class Equipment extends Model // Correction du nom
 {
     use HasFactory;
 
-    // Définir les champs que l'on peut remplir
     protected $fillable = [
         'name',
         'code',
@@ -19,26 +20,22 @@ class Equipement extends Model
         'user_id'
     ];
 
-    // Définir la relation avec la table 'equipement_types'
-    public function type()
+    public function type(): BelongsTo
     {
-        return $this->belongsTo(EquipementType::class, 'type_id');
+        return $this->belongsTo(EquipmentType::class, 'type_id'); // Nom corrigé
     }
 
-    // Définir la relation avec la table 'users'
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    // Définir la relation avec la table 'maintenance_requests'
-    public function maintenanceRequests()
+    public function maintenanceRequests(): HasMany
     {
         return $this->hasMany(MaintenanceRequest::class);
     }
 
-    // Définir la relation avec la table 'equipment_characteristic_values'
-    public function characteristicValues()
+    public function characteristicValues(): HasMany
     {
         return $this->hasMany(EquipmentCharacteristicValue::class);
     }

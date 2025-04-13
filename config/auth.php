@@ -12,6 +12,10 @@ return [
     | as required, but they're a perfect start for most applications.
     |
     */
+   
+        'allow_registration' => env('ALLOW_REGISTRATION', false),
+        // ... autres valeurs de configuration existantes ...
+    
 
     'defaults' => [
         'guard' => 'web',
@@ -111,5 +115,6 @@ return [
     */
 
     'password_timeout' => 10800,
+    
 
 ];

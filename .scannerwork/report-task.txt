@@ -1,0 +1,6 @@
+projectKey=projet_logiciel
+serverUrl=http://localhost:9000
+serverVersion=25.3.0.104237
+dashboardUrl=http://localhost:9000/dashboard?id=projet_logiciel
+ceTaskId=48461f8e-4ebc-4ac7-9f17-32552996e6c0
+ceTaskUrl=http://localhost:9000/api/ce/task?id=48461f8e-4ebc-4ac7-9f17-32552996e6c0

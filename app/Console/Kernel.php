@@ -22,6 +22,9 @@ class Kernel extends ConsoleKernel
     {
         $this->load(__DIR__.'/Commands');
 
-        require base_path('routes/console.php');
+        require_once base_path('routes/console.php');
     }
 }
+/*  clé sonarcube projet instad Analyze "instad": sqp_5f245ca71b1bd4c0f8f812f1f3f77a3e5ade9d3e */
+
+/* sonar-scanner.bat -D"sonar.projectKey=instad" -D"sonar.sources=." -D"sonar.host.url=http://127.0.0.1:9000" -D"sonar.token=sqp_5f245ca71b1bd4c0f8f812f1f3f77a3e5ade9d3e" */

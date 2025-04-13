@@ -31,4 +31,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    // Dans config/services.php
+        'gmail' => [
+            'password' => env('MAIL_APP_PASSWORD'), // Utiliser un mot de passe différent du .env
+        ],
+
 ];

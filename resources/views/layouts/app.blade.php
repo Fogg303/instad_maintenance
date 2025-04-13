@@ -1,94 +1,77 @@
-<!-- filepath: c:\xampp\htdocs\instad_maintenance\resources\views\layouts\app.blade.php -->
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>@yield('title', 'Dashboard - SB Admin')</title>
-        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-        <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    </head>
-    <body class="sb-nav-fixed">
-        <!-- Top Navigation -->
-        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-            <a class="navbar-brand ps-3" href="{{ route('dashboard') }}">Start Bootstrap</a>
-            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
-            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Settings</a></li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button class="dropdown-item" type="submit">Logout</button>
-                            </form>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Dashboard - INStaD')</title>
+    
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
 
-        <div id="layoutSidenav">
-            <!-- Sidebar -->
-            <div id="layoutSidenav_nav">
-                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                    <div class="sb-sidenav-menu">
-                        <div class="nav">
-                            <div class="sb-sidenav-menu-heading">Core</div>
-                            <a class="nav-link" href="{{ route('dashboard') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Dashboard
-                            </a>
-                            <div class="sb-sidenav-menu-heading">Interface</div>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                                Layouts
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="#">Static Navigation</a>
-                                    <a class="nav-link" href="#">Light Sidenav</a>
-                                </nav>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="sb-sidenav-footer">
-                        <div class="small">Logged in as:</div>
-                        {{ Auth::user()->name ?? 'Guest' }}
-                    </div>
-                </nav>
-            </div>
-
-            <!-- Main Content -->
-            <div id="layoutSidenav_content">
-                <main>
-                    <div class="container-fluid px-4">
-                        @yield('content')
-                    </div>
-                </main>
-                <footer class="py-4 bg-light mt-auto">
-                    <div class="container-fluid px-4">
-                        <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; Your Website 2023</div>
-                            <div>
-                                <a href="#">Privacy Policy</a>
-                                &middot;
-                                <a href="#">Terms &amp; Conditions</a>
-                            </div>
-                        </div>
-                    </div>
-                </footer>
+    <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-900">
+    <!-- Navigation -->
+    <nav class="bg-indigo-600 p-4">
+        <div class="flex items-center justify-between">
+            <a href="{{ route('dashboard') }}" class="text-white text-lg font-semibold">INStaD Maintenance</a>
+            <button @click="sidebarOpen = !sidebarOpen" class="text-white lg:hidden">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="hidden lg:flex space-x-4">
+                <a href="{{ route('profile.edit') }}" class="text-white hover:bg-indigo-700 p-2 rounded">Profile</a>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="text-white hover:bg-indigo-700 p-2 rounded">Logout</button>
+                </form>
             </div>
         </div>
+    </nav>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="{{ asset('js/scripts.js') }}"></script>
-    </body>
+    <!-- Sidebar -->
+    <div x-data="{ sidebarOpen: false }">
+        <div class="lg:flex hidden">
+            <nav class="bg-indigo-700 w-64 space-y-6 py-6 px-4">
+                <div class="text-white font-semibold">Dashboard</div>
+                <ul class="space-y-2">
+                    <li>
+                        <a href="{{ route('dashboard') }}" class="text-white hover:bg-indigo-600 p-2 rounded">Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.directions.index') }}" class="text-white hover:bg-indigo-600 p-2 rounded">Manage Directions</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div x-show="sidebarOpen" class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-50" @click="sidebarOpen = false"></div>
+        <div x-show="sidebarOpen" class="lg:hidden fixed top-0 left-0 bg-indigo-700 w-64 h-full p-4 z-50">
+            <div class="text-white font-semibold">Dashboard</div>
+            <ul class="space-y-2">
+                <li>
+                    <a href="{{ route('dashboard') }}" class="text-white hover:bg-indigo-600 p-2 rounded">Dashboard</a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.directions.index') }}" class="text-white hover:bg-indigo-600 p-2 rounded">Manage Directions</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-1 bg-gray-100 p-6">
+        <div class="container mx-auto">
+            @yield('content')
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-200 py-4 mt-6">
+        <div class="container mx-auto text-center text-gray-500">
+            <p>&copy; 2023 INStaD - All Rights Reserved</p>
+        </div>
+    </footer>
+</body>
 </html>

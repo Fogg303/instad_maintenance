@@ -1,127 +1,283 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="Dashboard for INSTAD Maintenance Platform" />
-        <meta name="author" content="INSTAD Team" />
-        <title>Admin Dashboard - INSTAD</title>
+<html lang="fr" x-data="{ isMenuOpen: false }">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Dashboard for INSTAD Maintenance Platform" />
+    <meta name="author" content="INSTAD Team" />
+    <title>Admin Dashboard - INSTAD</title>
 
-        <!-- Tailwind CSS -->
-        <script src="https://cdn.tailwindcss.com"></script>
-        <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-        <!-- Font Awesome -->
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-        <!-- Custom CSS -->
-        <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
-    </head>
-    <body class="bg-gray-100 font-sans leading-normal tracking-normal">
-        <!-- Top Navigation -->
-        <nav class="bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white shadow-lg">
-            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-                <a href="#" class="text-2xl font-bold">INSTAD-BENIN</a>
-                <div class="flex items-center space-x-4">
-                    <span class="text-sm">Logged in as: <strong>{{ Auth::user()->name }}</strong></span>
-                    <div class="relative">
-                        <button class="focus:outline-none">
-                            <i class="fas fa-user fa-fw"></i>
-                        </button>
-                        <ul class="absolute right-0 mt-2 w-48 bg-white text-gray-800 shadow-lg rounded-lg overflow-hidden">
-                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-200">Settings</a></li>
-                            <li>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="block w-full text-left px-4 py-2 hover:bg-gray-200">Logout</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        instadBlue: '#1E3A8A',
+                        instadDark: '#1E293B',
+                        instadSecondary: '#3B82F6'
+                    }
+                }
+            }
+        };
+    </script>
+
+    <style>
+        [x-cloak] { display: none !important; }
+        .user-menu {
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <!-- Top Navigation -->
+    <nav class="bg-instadBlue text-white shadow-lg fixed w-full z-50">
+        <div class="mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <button id="sidebarToggle" class="lg:hidden">
+                    <i class="bi bi-list text-2xl"></i>
+                </button>
+                <a href="#" class="flex items-center">
+                    <img src="{{ asset('assets/img/instad-logo.jpg') }}" alt="INSTAD Logo" class="h-10">
+                </a>
+            </div>
+            
+            <div class="flex items-center space-x-6">
+                <div class="relative group">
+                    <button class="flex items-center space-x-2 focus:outline-none">
+                        <i class="bi bi-bell text-xl"></i>
+                        <span class="bg-red-500 text-xs px-2 py-1 rounded-full">3</span>
+                    </button>
                 </div>
-            </div>
-        </nav>
-
-        <!-- Sidebar and Content -->
-        <div class="flex">
-            <!-- Sidebar -->
-            <div class="w-64 bg-gradient-to-b from-blue-700 to-blue-900 text-white h-screen">
-                <div class="p-4 text-lg font-bold border-b border-blue-500">Admin Menu</div>
-                <ul class="mt-4 space-y-2">
-                    <li>
-                        <a href="#" class="block px-4 py-2 hover:bg-blue-600 rounded">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                
+                <!-- Menu Utilisateur -->
+                <div class="relative" x-data="{ open: false }">
+                    <button 
+                        @click="open = !open"
+                        class="flex items-center space-x-2 focus:outline-none"
+                    >
+                        <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}" 
+                             class="h-8 w-8 rounded-full border-2 border-white">
+                        <span class="font-medium">{{ Auth::user()->name }}</span>
+                        <i class="bi bi-chevron-down text-sm"></i>
+                    </button>
+                    
+                    <div 
+                        class="user-menu absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-lg py-1 z-50"
+                        x-show="open"
+                        @click.away="open = false"
+                        x-cloak
+                        x-transition:enter="transition ease-out duration-100"
+                        x-transition:enter-start="transform opacity-0 scale-95"
+                        x-transition:enter-end="transform opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-75"
+                        x-transition:leave-start="transform opacity-100 scale-100"
+                        x-transition:leave-end="transform opacity-0 scale-95"
+                    >
+                        <a 
+                            href="{{ route('profile.edit') }}" 
+                            class="flex items-center px-4 py-3 hover:bg-gray-100 space-x-3"
+                        >
+                            <i class="bi bi-person"></i>
+                            <span>Mon Profil</span>
                         </a>
-                    </li>
-                    <li>
-                        <a href="#" class="block px-4 py-2 hover:bg-blue-600 rounded">
-                            <i class="fas fa-users"></i> Manage Users
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="block px-4 py-2 hover:bg-blue-600 rounded">
-                            <i class="fas fa-desktop"></i> Manage Equipments
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="block px-4 py-2 hover:bg-blue-600 rounded">
-                            <i class="fas fa-tools"></i> Maintenance Requests
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="block px-4 py-2 hover:bg-blue-600 rounded">
-                            <i class="fas fa-chart-bar"></i> Reports
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Main Content -->
-            <div class="flex-1 p-6">
-                <h1 class="text-3xl font-bold mb-6">Admin Dashboard</h1>
-
-                <!-- Section: Statistics -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Total Users -->
-                    <div class="bg-gradient-to-r from-blue-400 to-blue-600 text-white p-6 rounded-lg shadow-lg">
-                        <h5 class="text-lg font-semibold">Total Users</h5>
-                        <h2 class="text-4xl font-bold mt-2">123</h2>
-                    </div>
-
-                    <!-- Total Technicians -->
-                    <div class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white p-6 rounded-lg shadow-lg">
-                        <h5 class="text-lg font-semibold">Total Technicians</h5>
-                        <h2 class="text-4xl font-bold mt-2">45</h2>
-                    </div>
-
-                    <!-- Open Maintenance Requests -->
-                    <div class="bg-gradient-to-r from-green-400 to-green-600 text-white p-6 rounded-lg shadow-lg">
-                        <h5 class="text-lg font-semibold">Open Maintenance Requests</h5>
-                        <h2 class="text-4xl font-bold mt-2">12</h2>
-                    </div>
-
-                    <!-- Completed Requests -->
-                    <div class="bg-gradient-to-r from-red-400 to-red-600 text-white p-6 rounded-lg shadow-lg">
-                        <h5 class="text-lg font-semibold">Completed Requests</h5>
-                        <h2 class="text-4xl font-bold mt-2">30</h2>
+                        
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button 
+                                type="submit"
+                                class="w-full text-left flex items-center px-4 py-3 hover:bg-gray-100 space-x-3"
+                            >
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Déconnexion</span>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
+    </nav>
 
-        <!-- Footer -->
-        <footer class="bg-gradient-to-r from-blue-800 to-blue-900 text-white mt-6">
-            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-                <span>&copy; 2025 INSTAD. All rights reserved.</span>
-                <div>
-                    <a href="#" class="hover:underline">Privacy Policy</a>
-                    &middot;
-                    <a href="#" class="hover:underline">Terms & Conditions</a>
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-instadDark text-white fixed h-screen shadow-lg transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-40">
+        <div class="p-6 text-xl font-bold border-b border-blue-500">Menu Admin</div>
+        <nav class="mt-4 space-y-1">
+            <a href="{{ route('admin.dashboard') }}" class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{{ route('admin.users.index') }}" class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3">
+                <i class="bi bi-people"></i>
+                <span>Utilisateurs</span>
+            </a>
+            <a href="{{ route('admin.directions.index') }}" class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3">
+                <i class="bi bi-building"></i>
+                <span>Directions</span>
+            </a>
+            <a href="#equipments" class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3">
+                <i class="bi bi-pc-display"></i>
+                <span>Équipements</span>
+            </a>
+            <a href="#demandes" class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3">
+                <i class="bi bi-clipboard-check"></i>
+                <span>Demandes</span>
+            </a>
+            <a href="#reports" class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3">
+                <i class="bi bi-bar-chart"></i>
+                <span>Reporting</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="lg:ml-64 pt-20 px-4 min-h-screen">
+        <div class="py-6">
+            <!-- Statistics Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-gray-500">Utilisateurs</p>
+                            <p class="text-3xl font-bold">1,234</p>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <i class="bi bi-people text-2xl text-instadBlue"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-gray-500">Demandes Actives</p>
+                            <p class="text-3xl font-bold">42</p>
+                        </div>
+                        <div class="bg-orange-100 p-3 rounded-full">
+                            <i class="bi bi-exclamation-triangle text-2xl text-orange-500"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-gray-500">Équipements</p>
+                            <p class="text-3xl font-bold">568</p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <i class="bi bi-pc-display text-2xl text-green-500"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-gray-500">Taux de Résolution</p>
+                            <p class="text-3xl font-bold">92%</p>
+                        </div>
+                        <div class="bg-purple-100 p-3 rounded-full">
+                            <i class="bi bi-check2-circle text-2xl text-purple-500"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </footer>
 
-        <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <h3 class="text-lg font-semibold mb-4">Évolution des Demandes</h3>
+                    <canvas id="requestsChart"></canvas>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <h3 class="text-lg font-semibold mb-4">Statut des Équipements</h3>
+                    <canvas id="equipmentStatusChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Requests Table -->
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="px-6 py-4 border-b">
+                    <h3 class="text-lg font-semibold">Dernières Demandes</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left">ID</th>
+                                <th class="px-6 py-3 text-left">Description</th>
+                                <th class="px-6 py-3 text-left">Priorité</th>
+                                <th class="px-6 py-3 text-left">Statut</th>
+                                <th class="px-6 py-3 text-left">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y">
+                            <!-- Sample Data -->
+                            <tr>
+                                <td class="px-6 py-4">#123</td>
+                                <td class="px-6 py-4">Problème de réseau</td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-sm">Haute</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">En cours</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <button class="text-instadBlue hover:text-blue-700">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script>
+        // Sidebar Toggle
+        document.getElementById('sidebarToggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        });
+
+        // Charts Initialization
+        const requestsChart = new Chart(document.getElementById('requestsChart'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Demandes',
+                    data: [12, 19, 3, 5, 2, 3],
+                    borderColor: '#1E3A8A',
+                    tension: 0.4
+                }]
+            }
+        });
+
+        const equipmentStatusChart = new Chart(document.getElementById('equipmentStatusChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Neuf', 'En panne', 'Réparé'],
+                datasets: [{
+                    data: [300, 50, 100],
+                    backgroundColor: ['#10B981', '#EF4444', '#3B82F6']
+                }]
+            }
+        });
+    </script>
+
+</body>
 </html>

@@ -2,80 +2,101 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * Les attributs qui peuvent être attribués en masse.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role', // Ajout du champ pour les rôles (admin, technician, user)
-        'direction_id' // Ajout de la relation avec la table direction
+        'role',
+        'direction_id',
+        'force_password_change',
+        'password_changed_at',
     ];
 
-    /**
-     * Les attributs à masquer lors de la sérialisation.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Les attributs à convertir.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        
+        'force_password_change' => 'boolean',
+        'password_changed_at' => 'datetime',
     ];
 
-    /**
-     * Définir la relation avec la table 'directions'
-     */
+    protected $dates = [
+        'password_changed_at'
+    ];
+
     public function direction()
     {
         return $this->belongsTo(Direction::class);
     }
 
-    /**
-     * Définir la relation avec la table 'equipements'
-     */
     public function equipments()
     {
-        return $this->hasMany(Equipement::class);
+        return $this->hasMany(Equipment::class);
     }
 
-    /**
-     * Définir la relation avec la table 'maintenance_requests'
-     */
     public function maintenanceRequests()
     {
         return $this->hasMany(MaintenanceRequest::class);
     }
 
-    /**
-     * Définir la relation avec la table 'maintenance_requests' pour les techniciens assignés
-     */
     public function assignedMaintenanceRequests()
     {
         return $this->hasMany(MaintenanceRequest::class, 'technician_id');
     }
+
+    public function setPasswordAttribute($value)
+    {
+        if (!empty($value)) {
+            $this->attributes['password'] = Hash::needsRehash($value) 
+                ? Hash::make($value) 
+                : $value;
+        }
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function hasVerifiedEmail()
+    {
+        return !is_null($this->email_verified_at);
+    }
+
+    public function markEmailAsVerified()
+    {
+        $this->forceFill([
+            'email_verified_at' => $this->freshTimestamp(),
+        ])->save();
+    }
+    
+    public function needsPasswordChange()
+    {
+        return is_null($this->password_changed_at);
+    }
+
+    public function mustChangePassword(): bool
+    {
+        return $this->force_password_change || is_null($this->password_changed_at);
+    }
+
+    public function sendTemporaryPasswordNotification($tempPassword): void
+    {
+        $this->notify(new \App\Notifications\TemporaryPasswordNotification($tempPassword));
+    }
 }
-
-

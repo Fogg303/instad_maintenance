@@ -1,107 +1,129 @@
-<!-- filepath: c:\xampp\htdocs\instad_maintenance\resources\views\auth\register.blade.php -->
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <title>Register - Beautiful Form</title>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Inscription - INSTAD</title>
 
-        <!-- Tailwind CSS -->
-        <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-        <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-        <!-- Font Awesome -->
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-
-        <!-- Custom Styles -->
-        <style>
-            body {
-                background: linear-gradient(to right, #4e54c8, #8f94fb);
-                font-family: 'Figtree', sans-serif;
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        techPrimary: '#3B82F6',
+                        techSecondary: '#60A5FA',
+                        techDark: '#1E293B'
+                    }
+                }
             }
-            .card {
-                border-radius: 15px;
-            }
-            .form-control:focus {
-                border-color: #6c63ff;
-                box-shadow: 0 0 5px rgba(108, 99, 255, 0.5);
-            }
-            .btn-primary {
-                background-color: #6c63ff;
-                border-color: #6c63ff;
-            }
-            .btn-primary:hover {
-                background-color: #574bff;
-                border-color: #574bff;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container d-flex justify-content-center align-items-center min-vh-100">
-            <div class="col-lg-5">
-                <div class="card shadow-lg border-0">
-                    <div class="card-header bg-white text-center">
-                        <h3 class="text-primary font-weight-bold">Register</h3>
-                    </div>
-                    <div class="card-body">
-                        <form method="POST" action="{{ route('register') }}">
-                            @csrf
+        };
+    </script>
 
-                            <!-- Name -->
-                            <div class="form-floating mb-3">
-                                <input id="name" type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Name" value="{{ old('name') }}" required autofocus />
-                                <label for="name"><i class="fas fa-user me-2"></i>Name</label>
-                                @error('name')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
-                            </div>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1E293B 0%, #3B82F6 100%);
+            font-family: 'Inter', sans-serif;
+        }
+        .auth-card {
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        .form-input:focus {
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+        <div class="auth-card bg-white p-8">
+            <div class="text-center mb-8">
+                <img src="{{ asset('assets/img/instad-logo.jpg') }}" alt="INSTAD Logo" class="h-12 mx-auto mb-4">
+                <h2 class="text-2xl font-bold text-gray-800">Créer un compte</h2>
+                <p class="text-gray-600">Rejoignez notre plateforme technique</p>
+            </div>
 
-                            <!-- Email Address -->
-                            <div class="form-floating mb-3">
-                                <input id="email" type="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email" value="{{ old('email') }}" required />
-                                <label for="email"><i class="fas fa-envelope me-2"></i>Email Address</label>
-                                @error('email')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
-                            </div>
+            @if ($errors->any())
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded">
+                    @foreach ($errors->all() as $error)
+                        <p class="text-red-700">{{ $error }}</p>
+                    @endforeach
+                </div>
+            @endif
 
-                            <!-- Password -->
-                            <div class="form-floating mb-3">
-                                <input id="password" type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password" required />
-                                <label for="password"><i class="fas fa-lock me-2"></i>Password</label>
-                                @error('password')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
-                            </div>
+            <form method="POST" action="{{ route('register') }}" class="space-y-6">
+                @csrf
 
-                            <!-- Confirm Password -->
-                            <div class="form-floating mb-3">
-                                <input id="password_confirmation" type="password" name="password_confirmation" class="form-control @error('password_confirmation') is-invalid @enderror" placeholder="Confirm Password" required />
-                                <label for="password_confirmation"><i class="fas fa-lock me-2"></i>Confirm Password</label>
-                                @error('password_confirmation')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <!-- Submit Button -->
-                            <div class="d-flex justify-content-between align-items-center">
-                                <a href="{{ route('login') }}" class="text-primary small">Already registered?</a>
-                                <button type="submit" class="btn btn-primary">Register</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card-footer text-center bg-white">
-                        <div class="small">
-                            <a href="{{ route('login') }}" class="text-primary">Already have an account? Log in!</a>
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nom complet</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="bi bi-person text-gray-400"></i>
                         </div>
+                        <input id="name" type="text" name="name" required autofocus
+                            class="form-input pl-10 block w-full rounded-lg border-gray-300 focus:border-techPrimary"
+                            placeholder="Votre nom">
                     </div>
                 </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Adresse email</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="bi bi-envelope text-gray-400"></i>
+                        </div>
+                        <input id="email" type="email" name="email" required
+                            class="form-input pl-10 block w-full rounded-lg border-gray-300 focus:border-techPrimary"
+                            placeholder="email@exemple.com">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="bi bi-lock text-gray-400"></i>
+                        </div>
+                        <input id="password" type="password" name="password" required
+                            class="form-input pl-10 block w-full rounded-lg border-gray-300 focus:border-techPrimary"
+                            placeholder="••••••••">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Confirmer le mot de passe</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="bi bi-lock-fill text-gray-400"></i>
+                        </div>
+                        <input id="password_confirmation" type="password" name="password_confirmation" required
+                            class="form-input pl-10 block w-full rounded-lg border-gray-300 focus:border-techPrimary"
+                            placeholder="••••••••">
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" 
+                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-white bg-techPrimary hover:bg-techSecondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-techPrimary">
+                        S'inscrire
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">
+                    Vous avez déjà un compte? 
+                    <a href="{{ route('login') }}" class="font-medium text-techPrimary hover:text-techSecondary">
+                        Connectez-vous
+                    </a>
+                </p>
             </div>
         </div>
-
-        <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
+    </div>
+</body>
 </html>

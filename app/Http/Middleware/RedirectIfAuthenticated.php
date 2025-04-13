@@ -24,9 +24,9 @@ class RedirectIfAuthenticated
                 $user = Auth::user();
 
                 // Redirection en fonction du rôle
-                if ($user->usertype === 'admin') {
+                if ($user->role === 'admin') {
                     return redirect('/admin/dashboard');
-                } elseif ($user->usertype === 'technician') {
+                } elseif ($user->role === 'technician') {
                     return redirect('/technician/dashboard');
                 } else {
                     return redirect('/user/dashboard');
