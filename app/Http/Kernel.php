@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'role' => \App\Http\Middleware\RoleMiddleware::class, // Middleware pour vérifier le rôle
         'force.password.change' => \App\Http\Middleware\ForcePasswordChange::class,
         'password.changed' => \App\Http\Middleware\ForcePasswordChange::class, // Même classe
+        'check.equipment.status' => \App\Http\Middleware\CheckEquipmentStatus::class,
     ];
 }

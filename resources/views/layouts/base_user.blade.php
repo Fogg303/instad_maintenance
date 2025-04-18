@@ -129,23 +129,30 @@
            @click.away="isMenuOpen = false">
         <div class="p-6 text-xl font-bold border-b border-userPrimary">Menu Utilisateur</div>
         <nav class="mt-4 space-y-1">
-            <a href="{{ route('dashboard') }}" class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3">
+            <a href="{{ route('user.dashboard') }}" class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3">
                 <i class="bi bi-speedometer2"></i>
                 <span>Tableau de bord</span>
             </a>
-            <a href="" class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3">
+            <a href="{{ route('user.maintenance.index') }}" class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3">
                 <i class="bi bi-ticket-detailed"></i>
                 <span>Mes Tickets</span>
             </a>
-            <a href="" class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3">
+        <!-- Nouvelle Demande -->
+        <a href="{{ route('user.maintenance.select-equipment') }}" 
+           class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3
+                  {{ request()->routeIs('maintenance.select-equipment') ? 'bg-userPrimary' : '' }}">
+            <i class="bi bi-plus-circle"></i>
+            <span>Nouvelle Demande</span>
+        </a>
+            <a href="{{ route('user.equipments.create') }}" class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3">
                 <i class="bi bi-plus-circle"></i>
-                <span>Nouvelle Demande</span>
+                <span>Nouvel ajout d'Equipement</span>
             </a>
-            <a href="" class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3">
+            <a href="{{ route('user.equipments.index') }}" class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3">
                 <i class="bi bi-pc-display"></i>
                 <span>Mes Équipements</span>
             </a>
-            <a href="" class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3">
+            <a href="#" class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3">
                 <i class="bi bi-chat-left-text"></i>
                 <span>Messagerie</span>
             </a>

@@ -72,7 +72,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->role === 'admin';
     }
-
+    public function isTechnician()
+{
+    return $this->role === 'technician';
+}
     public function hasVerifiedEmail()
     {
         return !is_null($this->email_verified_at);
@@ -99,4 +102,8 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $this->notify(new \App\Notifications\TemporaryPasswordNotification($tempPassword));
     }
+
+    
 }
+
+

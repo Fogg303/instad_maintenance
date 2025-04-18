@@ -161,19 +161,26 @@
            @click.away="isMenuOpen = false">
         <div class="p-6 text-xl font-bold border-b border-userPrimary">Menu Utilisateur</div>
         <nav class="mt-4 space-y-1">
-            <a href="{{ route('dashboard') }}" class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3">
+            <a href="{{ route('user.dashboard') }}" class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3">
                 <i class="bi bi-speedometer2"></i>
                 <span>Tableau de bord</span>
             </a>
-            <a href="#" class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3">
+            <a href="{{ route('user.maintenance.index') }}" class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3">
                 <i class="bi bi-ticket-detailed"></i>
                 <span>Mes Tickets</span>
             </a>
-            <a href="#" class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3">
+        <!-- Nouvelle Demande -->
+        <a href="{{ route('user.maintenance.select-equipment') }}" 
+           class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3
+                  {{ request()->routeIs('maintenance.select-equipment') ? 'bg-userPrimary' : '' }}">
+            <i class="bi bi-plus-circle"></i>
+            <span>Nouvelle Demande</span>
+        </a>
+            <a href="{{ route('user.equipments.create') }}" class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3">
                 <i class="bi bi-plus-circle"></i>
-                <span>Nouvelle Demande</span>
+                <span>Nouvel ajout d'Equipement</span>
             </a>
-            <a href="#" class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3">
+            <a href="{{ route('user.equipments.index') }}" class="flex items-center px-4 py-3 hover:bg-userPrimary space-x-3">
                 <i class="bi bi-pc-display"></i>
                 <span>Mes Équipements</span>
             </a>
@@ -185,228 +192,160 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="lg:ml-64 pt-20 px-4 min-h-screen">
-        <div class="py-6">
-            <!-- Welcome Banner -->
-            <div class="bg-gradient-to-r from-userPrimary to-userSecondary text-white p-6 rounded-xl shadow-sm mb-8">
-                <div class="flex flex-col md:flex-row justify-between items-center">
+<!-- Main Content -->
+<main class="lg:ml-64 pt-20 px-4 min-h-screen">
+    <div class="py-6">
+        <!-- Welcome Banner -->
+        <div class="bg-gradient-to-r from-userPrimary to-userSecondary text-white p-6 rounded-xl shadow-sm mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold">Bonjour, {{ Auth::user()->name }} !</h2>
+                    <p class="mt-2">Comment pouvons-nous vous aider aujourd'hui ?</p>
+                </div>
+                <a href="" class="mt-4 md:mt-0 bg-white text-userPrimary px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition">
+                    <i class="bi bi-plus-lg mr-2"></i>Nouvelle demande
+                </a>
+            </div>
+        </div>
+
+        <!-- Statistiques Utilisateur -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-userPrimary">
+                <div class="flex justify-between items-center">
                     <div>
-                        <h2 class="text-2xl font-bold">Bonjour, {{ Auth::user()->name }} !</h2>
-                        <p class="mt-2">Comment pouvons-nous vous aider aujourd'hui ?</p>
+                        <p class="text-gray-500">Tickets ouverts</p>
+                        <p class="text-3xl font-bold">{{ $stats['open_tickets'] }}</p>
                     </div>
-                    <a href="#" class="mt-4 md:mt-0 bg-white text-userPrimary px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition">
-                        <i class="bi bi-plus-lg mr-2"></i>Nouvelle demande
-                    </a>
+                    <i class="bi bi-ticket-detailed text-2xl text-userPrimary"></i>
                 </div>
             </div>
-
-            <!-- Statistiques Utilisateur -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-userPrimary">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="text-gray-500">Tickets ouverts</p>
-                            <p class="text-3xl font-bold">3</p>
-                        </div>
-                        <i class="bi bi-ticket-detailed text-2xl text-userPrimary"></i>
+            
+            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-green-500">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-gray-500">Tickets résolus</p>
+                        <p class="text-3xl font-bold">{{ $stats['resolved_tickets'] }}</p>
                     </div>
-                </div>
-                
-                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-green-500">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="text-gray-500">Tickets résolus</p>
-                            <p class="text-3xl font-bold">12</p>
-                        </div>
-                        <i class="bi bi-check2-circle text-2xl text-green-500"></i>
-                    </div>
-                </div>
-                
-                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-yellow-500">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="text-gray-500">En attente</p>
-                            <p class="text-3xl font-bold">2</p>
-                        </div>
-                        <i class="bi bi-clock text-2xl text-yellow-500"></i>
-                    </div>
-                </div>
-                
-                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-purple-500">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="text-gray-500">Satisfaction</p>
-                            <p class="text-3xl font-bold">4.5/5</p>
-                        </div>
-                        <i class="bi bi-emoji-smile text-2xl text-purple-500"></i>
-                    </div>
+                    <i class="bi bi-check2-circle text-2xl text-green-500"></i>
                 </div>
             </div>
-
-            <!-- Quick Actions -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <a href="#" class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:border-userPrimary transition group">
-                    <div class="flex items-center space-x-4">
-                        <div class="bg-userLight p-3 rounded-lg group-hover:bg-userPrimary group-hover:text-white text-userPrimary">
-                            <i class="bi bi-plus-lg text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-medium">Nouveau Ticket</h3>
-                            <p class="text-sm text-gray-500">Signaler un problème</p>
-                        </div>
+            
+            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-yellow-500">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-gray-500">En attente</p>
+                        <p class="text-3xl font-bold">{{ $stats['pending_tickets'] }}</p>
                     </div>
-                </a>
-                
-                <a href="#" class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:border-green-500 transition group">
-                    <div class="flex items-center space-x-4">
-                        <div class="bg-green-50 p-3 rounded-lg group-hover:bg-green-500 group-hover:text-white text-green-500">
-                            <i class="bi bi-search text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-medium">Base de connaissances</h3>
-                            <p class="text-sm text-gray-500">Solutions en libre accès</p>
-                        </div>
-                    </div>
-                </a>
-                
-                <a href="#" class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:border-blue-500 transition group">
-                    <div class="flex items-center space-x-4">
-                        <div class="bg-blue-50 p-3 rounded-lg group-hover:bg-blue-500 group-hover:text-white text-blue-500">
-                            <i class="bi bi-pc-display-horizontal text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-medium">Mes Équipements</h3>
-                            <p class="text-sm text-gray-500">Liste de vos appareils</p>
-                        </div>
-                    </div>
-                </a>
-                
-                <a href="#" class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:border-purple-500 transition group">
-                    <div class="flex items-center space-x-4">
-                        <div class="bg-purple-50 p-3 rounded-lg group-hover:bg-purple-500 group-hover:text-white text-purple-500">
-                            <i class="bi bi-chat-left-text text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-medium">Messagerie</h3>
-                            <p class="text-sm text-gray-500">Contactez le support</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Derniers Tickets -->
-            <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
-                <div class="px-6 py-4 border-b flex justify-between items-center">
-                    <h3 class="text-lg font-semibold">Mes Demandes Récentes</h3>
-                    <a href="#" class="text-sm text-userPrimary hover:text-userSecondary">Voir tout</a>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left">N° Ticket</th>
-                                <th class="px-6 py-3 text-left">Sujet</th>
-                                <th class="px-6 py-3 text-left">Statut</th>
-                                <th class="px-6 py-3 text-left">Date</th>
-                                <th class="px-6 py-3 text-left">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y">
-                            <tr>
-                                <td class="px-6 py-4 font-medium">#USER-125</td>
-                                <td class="px-6 py-4">Problème d'impression</td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">En cours</span>
-                                </td>
-                                <td class="px-6 py-4">15/06/2024</td>
-                                <td class="px-6 py-4">
-                                    <button class="text-userPrimary hover:text-userSecondary mr-3">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
-                                    <button class="text-gray-500 hover:text-gray-700">
-                                        <i class="bi bi-chat-left-text"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 font-medium">#USER-118</td>
-                                <td class="px-6 py-4">Accès au réseau</td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">Résolu</span>
-                                </td>
-                                <td class="px-6 py-4">10/06/2024</td>
-                                <td class="px-6 py-4">
-                                    <button class="text-userPrimary hover:text-userSecondary mr-3">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
-                                    <button class="text-gray-500 hover:text-gray-700">
-                                        <i class="bi bi-chat-left-text"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <i class="bi bi-clock text-2xl text-yellow-500"></i>
                 </div>
             </div>
-
-            <!-- Équipements -->
-            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                <div class="px-6 py-4 border-b flex justify-between items-center">
-                    <h3 class="text-lg font-semibold">Mes Équipements</h3>
-                    <a href="#" class="text-sm text-userPrimary hover:text-userSecondary">Voir tout</a>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
-                    <div class="border rounded-lg p-4 hover:shadow-md transition">
-                        <div class="flex items-center space-x-4">
-                            <div class="bg-userLight p-3 rounded-lg text-userPrimary">
-                                <i class="bi bi-pc-display text-2xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-medium">PC Portable - Dell XPS</h4>
-                                <p class="text-sm text-gray-500">SN: DXP-4587-9654</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex justify-between text-sm">
-                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded">Actif</span>
-                            <a href="#" class="text-userPrimary hover:text-userSecondary">Détails</a>
-                        </div>
+            
+            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-purple-500">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-gray-500">Satisfaction</p>
+                        <p class="text-3xl font-bold">4.5/5</p>
                     </div>
-                    
-                    <div class="border rounded-lg p-4 hover:shadow-md transition">
-                        <div class="flex items-center space-x-4">
-                            <div class="bg-blue-50 p-3 rounded-lg text-blue-500">
-                                <i class="bi bi-phone text-2xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-medium">Smartphone - iPhone 13</h4>
-                                <p class="text-sm text-gray-500">SN: IPH-1325-8741</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex justify-between text-sm">
-                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded">Actif</span>
-                            <a href="#" class="text-userPrimary hover:text-userSecondary">Détails</a>
-                        </div>
-                    </div>
-                    
-                    <div class="border rounded-lg p-4 hover:shadow-md transition">
-                        <div class="flex items-center space-x-4">
-                            <div class="bg-purple-50 p-3 rounded-lg text-purple-500">
-                                <i class="bi bi-printer text-2xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-medium">Imprimante - HP LaserJet</h4>
-                                <p class="text-sm text-gray-500">SN: HPL-7854-1236</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex justify-between text-sm">
-                            <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded">En maintenance</span>
-                            <a href="#" class="text-userPrimary hover:text-userSecondary">Détails</a>
-                        </div>
-                    </div>
+                    <i class="bi bi-emoji-smile text-2xl text-purple-500"></i>
                 </div>
             </div>
         </div>
-    </main>
+
+        <!-- Derniers Tickets -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
+            <div class="px-6 py-4 border-b flex justify-between items-center">
+                <h3 class="text-lg font-semibold">Mes Demandes Récentes</h3>
+                <a href="{{ route('user.maintenance.index') }}" class="text-sm text-userPrimary hover:text-userSecondary">Voir tout</a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left">N° Ticket</th>
+                            <th class="px-6 py-3 text-left">Sujet</th>
+                            <th class="px-6 py-3 text-left">Statut</th>
+                            <th class="px-6 py-3 text-left">Date</th>
+                            <th class="px-6 py-3 text-left">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y">
+                        @foreach($recent_requests as $request)
+                        <tr>
+                            <td class="px-6 py-4 font-medium">#{{ $request->id }}</td>
+                            <td class="px-6 py-4">{{ Str::limit($request->description, 40) }}</td>
+                            <td class="px-6 py-4">
+                            <span class="{{ get_status_color($request->status) }}">
+                                    {{ $request->status }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">{{ $request->created_at->format('d/m/Y') }}</td>
+                            <td class="px-6 py-4">
+                                <a href="{{ route('user.maintenance.show', $request) }}" class="text-userPrimary hover:text-userSecondary mr-3">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="#" class="text-gray-500 hover:text-gray-700">
+                                    <i class="bi bi-chat-left-text"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Équipements -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b flex justify-between items-center">
+                <h3 class="text-lg font-semibold">Mes Équipements</h3>
+                <a href="{{ route('user.equipments.index') }}" class="text-sm text-userPrimary hover:text-userSecondary">Voir tout</a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
+                @foreach($equipments as $equipment)
+                <div class="border rounded-lg p-4 hover:shadow-md transition">
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-userLight p-3 rounded-lg text-userPrimary">
+                            <i class="bi bi-pc-display text-2xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium">{{ $equipment->name }}</h4>
+                            <p class="text-sm text-gray-500">SN: {{ $equipment->code }}</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-between text-sm">
+                    {{-- Ligne corrigée --}}
+                        <span class="px-2 py-1 {{ $equipment->status_color }} rounded">
+                            {{ $equipment->status_label }}
+                        </span>
+                        <a href="{{ route('user.equipments.show', $equipment) }}" class="text-userPrimary hover:text-userSecondary">Détails</a>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</main>
+
+@push('scripts')
+<script>
+    function getStatusColor(status) {
+        switch(status) {
+            case 'open': return 'bg-blue-100 text-blue-800';
+            case 'resolved': return 'bg-green-100 text-green-800';
+            default: return 'bg-gray-100 text-gray-800';
+        }
+    }
+
+    function getEquipmentStatusColor(status) {
+        switch(status) {
+            case 'new': return 'bg-green-100 text-green-800';
+            case 'broken': return 'bg-red-100 text-red-800';
+            case 'repaired': return 'bg-yellow-100 text-yellow-800';
+            default: return 'bg-gray-100 text-gray-800';
+        }
+    }
+</script>
+@endpush
 
     <script>
         // Script pour gérer le menu mobile

@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('equipment_characteristic_values', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('equipment_id')->constrained('equipments')->cascadeOnDelete();
-            $table->string('caracteristique');
-            $table->string('valeur');
+            $table->foreignId('equipment_id')->constrained('equipments');
+            $table->foreignId('characteristic_id')->constrained();
+            $table->string('string_value')->nullable();
+            $table->decimal('numeric_value', 10, 2)->nullable();
+            $table->boolean('boolean_value')->nullable();
+            $table->date('date_value')->nullable();
             $table->timestamps();
         });
     }

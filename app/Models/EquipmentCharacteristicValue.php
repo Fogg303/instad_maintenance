@@ -9,22 +9,22 @@ class EquipmentCharacteristicValue extends Model
 {
     use HasFactory;
 
-    // Définir les champs que l'on peut remplir
     protected $fillable = [
         'equipment_id',
-        'characteristic',
-        'value'
+        'characteristic_id',
+        'string_value', 
+        'numeric_value',
+        'boolean_value',
+        'date_value'
     ];
 
-    // Définir la relation avec la table 'equipments'
     public function equipment()
     {
-        return $this->belongsTo(Equipement::class);
+        return $this->belongsTo(Equipment::class);
     }
 
-    // Définir la relation avec la table 'characteristics'
     public function characteristic()
     {
-        return $this->belongsTo(Characteristic::class, 'characteristic');
+        return $this->belongsTo(Characteristic::class);
     }
 }

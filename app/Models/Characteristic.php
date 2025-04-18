@@ -4,53 +4,52 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Characteristic extends Model
 {
     use HasFactory;
 
-    // Correction du nom de la clé étrangère
     protected $fillable = [
         'name',
         'default_value',
-        'type_id' // Garder le nom cohérent avec la migration
+        'type_id'
     ];
 
-    // Ajout des casts pour les types de données
-    protected $casts = [
-        'default_value' => 'json' // Pour stocker différents types de valeurs
-    ];
+    // Ajouter cette propriété pour inclure data_type dans les réponses JSON
+    protected $appends = ['data_type'];
 
-    /**
-     * Relation avec le type d'équipement
-     * 
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function equipmentType(): BelongsTo
+    public function equipmentType()
     {
-        // Correction de l'orthographe de la classe
         return $this->belongsTo(EquipmentType::class, 'type_id');
     }
 
-    /**
-     * Relation avec les valeurs des caractéristiques
-     * 
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function characteristicValues(): HasMany
+    public function values()
     {
-        return $this->hasMany(EquipmentCharacteristicValue::class);
+        return $this->hasMany(EquipmentCharacteristicValue::class, 'characteristic_id');
     }
 
-    // Ajout d'un accesseur pour la valeur par défaut
-    public function getFormattedDefaultValueAttribute()
+    // Déterminer le type de données dynamiquement
+    public function getDataTypeAttribute()
     {
-        return match($this->type) {
-            'boolean' => (bool)$this->default_value,
-            'integer' => (int)$this->default_value,
-            'float' => (float)$this->default_value,
+        $value = $this->default_value;
+
+        if (is_numeric($value)) {
+            return 'number';
+        } elseif ($value === 'true' || $value === 'false') {
+            return 'boolean';
+        } elseif (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+            return 'date';
+        } else {
+            return 'string';
+        }
+    }
+
+    // Garder la méthode existante pour le formatage
+    public function getFormattedDefaultAttribute()
+    {
+        return match(true) {
+            is_numeric($this->default_value) => (float)$this->default_value,
+            $this->default_value === 'true' || $this->default_value === 'false' => (bool)$this->default_value,
             default => $this->default_value
         };
     }

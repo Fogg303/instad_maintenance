@@ -20,9 +20,9 @@ class EquipmentType extends Model // Nom corrigé
         return $this->hasMany(Equipment::class); // Nom corrigé
     }
 
-    public function characteristics(): HasMany
+    // EquipmentType.php
+    public function characteristics()
     {
-        return $this->hasMany(Characteristic::class)
-            ->with('validationRules'); // Relation améliorée
+        return $this->hasMany(Characteristic::class, 'type_id');
     }
 }

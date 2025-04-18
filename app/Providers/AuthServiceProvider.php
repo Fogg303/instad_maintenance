@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use App\Models\User;
+use App\Models\Equipment;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -21,6 +23,10 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Ajoutez cette Gate
+        Gate::define('create-maintenance', function (User $user, Equipment $equipment) {
+            return $user->id === $equipment->user_id 
+                   && in_array($equipment->status, ['new', 'repaired']);
+        });
     }
 }

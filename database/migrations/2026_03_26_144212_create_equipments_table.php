@@ -15,14 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('code')->unique();
-            $table->enum('status', ['new', 'broken', 'repaired'])->default('new');
+            $table->string('status');
             $table->date('acquisition_date');
-            $table->foreignId('type_id')->nullable()->constrained('equipment_types')->nullOnDelete();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('type_id')->constrained('equipment_types')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Ajouter 'users'
+            $table->string('photo_path')->nullable();
             $table->timestamps();
         });
     }
-    
 
     /**
      * Reverse the migrations.

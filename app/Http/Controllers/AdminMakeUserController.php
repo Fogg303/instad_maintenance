@@ -16,32 +16,49 @@ class AdminMakeUserController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->input('search');
-        
-        $users = User::with('direction')
-            ->when($search, function($query) use ($search) {
-                $query->where(function($q) use ($search) {
-                    $q->where('name', 'like', "%$search%")
-                      ->orWhere('email', 'like', "%$search%")
-                      ->orWhereHas('direction', function($q) use ($search) {
-                          $q->where('name', 'like', "%$search%");
-                      });
-                });
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        try {
+            $search = $request->input('search');
+            
+            $users = User::with('direction')
+                ->when($search, function($query) use ($search) {
+                    $query->where(function($q) use ($search) {
+                        $q->where('name', 'like', "%$search%")
+                          ->orWhere('email', 'like', "%$search%")
+                          ->orWhereHas('direction', function($q) use ($search) {
+                              $q->where('name', 'like', "%$search%");
+                          });
+                    });
+                })
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
     
-        if($request->ajax()) {
-            return response()->json([
-                'html' => view('admin.users.partials.table', compact('users'))->render(),
-                'pagination' => $users->links()->toHtml()
+            if($request->ajax()) {
+                return response()->json([
+                    'table' => view('admin.users.partials.table', [
+                        'users' => $users,
+                        'searchTerm' => $search // Ajout du terme de recherche
+                    ])->render(),
+                    'pagination' => $users->links()->toHtml(),
+                    'count' => $users->total()
+                ]);
+            }
+    
+            return view('admin.users.index', [
+                'users' => $users,
+                'directions' => Direction::all()
             ]);
-        }
     
-        return view('admin.users.index', [
-            'users' => $users,
-            'directions' => Direction::all()
-        ]);
+        } catch (\Exception $e) {
+            logger()->error('Erreur recherche utilisateurs : ' . $e->getMessage());
+            
+            if($request->ajax()) {
+                return response()->json([
+                    'error' => 'Erreur serveur : ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return back()->withError('Une erreur est survenue');
+        }
     }
     public function create()
     {

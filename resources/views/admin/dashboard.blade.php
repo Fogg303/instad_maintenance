@@ -109,37 +109,60 @@
         </div>
     </nav>
 
-    <!-- Sidebar -->
-    <aside id="sidebar" class="w-64 bg-instadDark text-white fixed h-screen shadow-lg transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-40">
-        <div class="p-6 text-xl font-bold border-b border-blue-500">Menu Admin</div>
-        <nav class="mt-4 space-y-1">
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3">
-                <i class="bi bi-speedometer2"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="{{ route('admin.users.index') }}" class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3">
-                <i class="bi bi-people"></i>
-                <span>Utilisateurs</span>
-            </a>
-            <a href="{{ route('admin.directions.index') }}" class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3">
-                <i class="bi bi-building"></i>
-                <span>Directions</span>
-            </a>
-            <a href="#equipments" class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3">
-                <i class="bi bi-pc-display"></i>
-                <span>Équipements</span>
-            </a>
-            <a href="#demandes" class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3">
-                <i class="bi bi-clipboard-check"></i>
-                <span>Demandes</span>
-            </a>
-            <a href="#reports" class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3">
-                <i class="bi bi-bar-chart"></i>
-                <span>Reporting</span>
-            </a>
-        </nav>
-    </aside>
+<!-- Sidebar -->
+<aside id="sidebar" class="w-64 bg-instadDark text-white fixed h-screen shadow-lg transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-40">
+    <div class="p-6 text-xl font-bold border-b border-blue-500">Menu Admin</div>
+    <nav class="mt-4 space-y-1">
+        <a href="{{ route('admin.dashboard') }}" class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3">
+            <i class="bi bi-speedometer2"></i>
+            <span>Dashboard</span>
+        </a>
+        
+        <!-- Gestion des Types -->
+        <a href="{{ route('admin.equipment-types.index') }}" 
+           class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3 
+                  {{ request()->routeIs('admin.equipment-types.*') ? 'bg-blue-700' : '' }}">
+            <i class="bi bi-tags"></i>
+            <span>Types d'Équipements</span>
+        </a>
 
+        <!-- Gestion des Caractéristiques -->
+        <a href="{{ route('admin.characteristics.index') }}" 
+           class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3 
+                  {{ request()->routeIs('admin.characteristics.*') ? 'bg-blue-700' : '' }}">
+            <i class="bi bi-card-checklist"></i>
+            <span>Caractéristiques</span>
+        </a>
+
+        <a href="{{ route('admin.users.index') }}" class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3">
+            <i class="bi bi-people"></i>
+            <span>Utilisateurs</span>
+        </a>
+        
+        <a href="{{ route('admin.directions.index') }}" class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3">
+            <i class="bi bi-building"></i>
+            <span>Directions</span>
+        </a>
+        
+        <!-- Équipements Utilisateurs -->
+        <a href="{{ route('admin.equipments.index') }}" 
+           class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3 
+                  {{ request()->routeIs('admin.equipments.*') ? 'bg-blue-700' : '' }}">
+            <i class="bi bi-pc-display"></i>
+            <span>Équipements</span>
+        </a>
+        
+        <a href="" class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3">
+            <i class="bi bi-clipboard-check"></i>
+            <span>Demandes</span>
+        </a>
+        
+        <a href="" class="flex items-center px-4 py-3 hover:bg-blue-600 space-x-3">
+            <i class="bi bi-bar-chart"></i>
+            <span>Reporting</span>
+        </a>
+    </nav>
+</aside>
     <!-- Main Content -->
     <main class="lg:ml-64 pt-20 px-4 min-h-screen">
         <div class="py-6">

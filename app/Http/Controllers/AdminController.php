@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Direction;
+use App\Models\Characteristic;
+use App\Models\EquipmentType;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -69,4 +71,89 @@ class AdminController extends Controller
         return redirect()->route('admin.directions.index')
                         ->with('success', 'Direction supprimée avec succès.');
     }
+
+
+
+     // Gestion des types d'équipements
+     public function equipmentTypes()
+     {
+         $types = EquipmentType::with('characteristics')->get();
+         return view('admin.types.index', compact('types'));
+     }
+ 
+     public function createType()
+     {
+         return view('admin.types.create');
+     }
+ 
+     public function storeType(Request $request)
+     {
+         $validated = $request->validate([
+             'name' => 'required|string|max:255|unique:equipment_types,name',
+             'description' => 'nullable|string'
+         ]);
+ 
+         $type = EquipmentType::create($validated);
+ 
+         // Gestion des caractéristiques
+         foreach ($request->characteristics as $char) {
+             Characteristic::create([
+                 'name' => $char['name'],
+                 'default_value' => $char['default_value'],
+                 'type_id' => $type->id
+             ]);
+         }
+ 
+         return redirect()->route('admin.types')->with('success', 'Type créé avec ses caractéristiques');
+     }
+ 
+     public function editType(EquipmentType $type)
+     {
+         return view('admin.types.edit', compact('type'));
+     }
+ 
+     public function updateType(Request $request, EquipmentType $type)
+     {
+         $validated = $request->validate([
+             'name' => 'required|string|max:255|unique:equipment_types,name,'.$type->id,
+             'description' => 'nullable|string',
+             'is_active' => 'boolean'
+         ]);
+ 
+         $type->update($validated);
+         return redirect()->route('admin.types')->with('success', 'Type mis à jour');
+     }
+ 
+     // Gestion des caractéristiques
+     public function editCharacteristic(Characteristic $characteristic)
+     {
+         return view('admin.characteristics.edit', compact('characteristic'));
+     }
+ 
+     public function updateCharacteristic(Request $request, Characteristic $characteristic)
+     {
+         $validated = $request->validate([
+             'name' => 'required|string|max:255',
+             'default_value' => 'required|string'
+         ]);
+ 
+         $characteristic->update($validated);
+         return redirect()->route('admin.types')->with('success', 'Caractéristique mise à jour');
+     }
+ 
+     public function destroyCharacteristic(Characteristic $characteristic)
+     {
+         $characteristic->delete();
+         return back()->with('success', 'Caractéristique supprimée');
+     }
+ 
 }
+
+
+
+
+
+
+
+
+   
